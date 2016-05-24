@@ -1,0 +1,33 @@
+{
+  "name": "node-dota-api",
+  "version": "0.1.0",
+  "description": "API to fetch Dota stats for players, heroes, matches, and more!",
+  "main": "server.js",
+  "author": "Alex Muench",
+  "dependencies": {
+    "cheerio": "latest",
+    "express": "latest",
+    "request": "latest"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ammuench/node-dota-api.git"
+  },
+  "keywords": [
+    "extra",
+    "life",
+    "api",
+    "express",
+    "extralife",
+    "extra-life"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ammuench/node-dota-api/issues"
+  },
+  "homepage": "https://github.com/ammuench/node-dota-api"
+}

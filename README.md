@@ -1,2 +1,2 @@
-# node-yasp-api
-A node-based API for getting player data from Yasp.co
+# node-dota-api
+API to fetch Dota stats for players, heroes, matches, and more!
