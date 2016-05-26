@@ -1,7 +1,7 @@
 /**
  * node-dota-api
  * A node-based API to get Dota stats for players, heroes, matches, and more!
- * @version 0.2.1
+ * @version 0.2.3
  * @author Alex Muench
  */
 
@@ -66,7 +66,7 @@ module.exports = {
 				});
 
 				//If invalid values are passed in, the username will equal the invalid value, or NaN
-				if (playerInfoJson.name == playerID || playerInfoJson.name = NaN) {
+				if (playerInfoJson.name == playerID || playerInfoJson.name == 'NaN') {
 
 					playerInfoJson.status = "Invalid User";
 

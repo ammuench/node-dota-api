@@ -2,6 +2,9 @@
 API to fetch Dota stats for players, heroes, matches, and more!
 
 ## What's New? ##
+    v0.2.3
+    -Quick hotfix for a 0.2.2 issue
+
 	v 0.2.2
 	-Added check for invalid user
 	-whenPlayed now returns a formatted date string
