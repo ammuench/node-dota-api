@@ -1,6 +1,6 @@
 {
   "name": "node-dota-api",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A node-based API to get Dota stats for players, heroes, matches, and more!",
   "main": "./dotaPlayerApi.js",
   "author": "Alex Muench",
