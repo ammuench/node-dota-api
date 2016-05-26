@@ -2,6 +2,9 @@
 API to fetch Dota stats for players, heroes, matches, and more!
 
 ## What's New? ##
+	v 0.2.1
+	-Added match history to playerStats object
+
     v 0.2
     -Stripped out all the express jargon from 0.1
     -Flushed out full playerStats service
@@ -35,19 +38,28 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
     estMMR: "",
     name: "",
     winLoss: {
-    	wins: "",
-    	losses: "",
-    	winrate: ""
+        wins: "",
+        losses: "",
+        winrate: ""
     },
     mostPlayed: [
-        {
+		{
             hero: "",
-            games:"",
+            games: "",
             winrate: ""
         }
     ],
-    profileURL: profileUrl
-}
+    recentGames: [
+		{
+		    matchID: "",
+		    hero: "",
+		    outcome: "",
+		    whenPlayed: "",
+		    skillLevel: ""
+		}
+    ],
+    profileURL: ""
+};
 ```
 
 ## What's Planned ##

@@ -1,7 +1,7 @@
 /**
  * node-dota-api
  * A node-based API to get Dota stats for players, heroes, matches, and more!
- * @version 0.2.0
+ * @version 0.2.1
  * @author Alex Muench
  */
 
@@ -27,6 +27,7 @@ module.exports = {
      * @property {string} 		playerInfoJson.winLoss.losses	Number of losses (returned as string)
      * @property {string} 		playerInfoJson.winLoss.winrate	Winrate percentage
      * @property {array} 		playerInfoJson.mostPlayed 		Array of User's 5 most played heroes, with games played and winrate
+     * @property {array} 		playerInfoJson.recentGames 		Array of User's 20 most recent games, with matchID, hero, result, time played, and skill level
      * @property {string} 		playerInfoJson.profileUrl 		URL to user's proflie on Yasp.co
      */
     playerStats: function(playerID, callback) {
@@ -40,11 +41,12 @@ module.exports = {
             estMMR: "",
             name: "",
             winLoss: {
-            	wins: "",
-            	losses: "",
-            	winrate: ""
+                wins: "",
+                losses: "",
+                winrate: ""
             },
             mostPlayed: [],
+            recentGames: [],
             profileURL: profileUrl
         };
 
@@ -79,16 +81,16 @@ module.exports = {
                 //Finds User's Win/Loss Info
                 $('.text-primary').filter(function() {
 
-                	//Create array for each-loop to output to
-                	var sourceInfoArray = [];
+                    //Create array for each-loop to output to
+                    var sourceInfoArray = [];
 
-                	/**
-                	 * Since the win-loss container is made up of mulitple spans
-                	 * we iterate through all of them to get their text contents 
-                	 * and put them in a local array
-                	 */
-                    sources = $(this).children('small').children('span').each(function(i, elem){
-                    	sourceInfoArray[i] = $(this).text();
+                    /**
+                     * Since the win-loss container is made up of mulitple spans
+                     * we iterate through all of them to get their text contents 
+                     * and put them in a local array
+                     */
+                    sources = $(this).children('small').children('span').each(function(i, elem) {
+                        sourceInfoArray[i] = $(this).text();
                     });
 
                     //Assign array values to their correct properties
@@ -99,43 +101,94 @@ module.exports = {
                 });
 
                 $('#heroes').filter(function() {
-                	
-                	//gets all hero rows in the hero table
-                	var heroes = $(this).children('tbody').children('tr');
-                	//create array for, for loop output
-                	var heroesArray = [];
 
-                	/**
-                	 * Iterates through heros from table and adds them to heroesArray
-                	 * @param  	{Number}	limit	Defines how many heroes to add in array.  Max is 20			
-                	 */
-                	for(var i=0, limit=5; i<limit; i++){
+                    //gets all hero rows in the hero table
+                    var heroes = $(this).children('tbody').children('tr');
+                    //create array for, for loop output
+                    var heroesArray = [];
 
-                		//Set individual hero row
-                		var hero = heroes.eq(i).children('td');
+                    /**
+                     * Iterates through heros from table and adds them to heroesArray
+                     * @param  	{Number}	limit	Defines how many heroes to add in array.  Max is 20			
+                     */
+                    for (var i = 0, limit = 5; i < limit; i++) {
 
-                		//Create object with hero values
-                		var heroObj = {
-                			hero: hero.eq(0).text(),
-                			games: hero.eq(1).text(),
-                			winrate: hero.eq(2).text()
-                		}
+                        //Set individual hero row
+                        var hero = heroes.eq(i).children('td');
 
-                		//Push object to heroesArray
-                		heroesArray.push(heroObj);
-                	}
+                        /**
+                         * Object generated with player's hero stats
+                         * @type {Object}
+                         * @property {string} 	hero 	Dota hero name	
+                         * @property {string} 	games 	Games player has had on the hero
+                         * @property {string} 	winrate	Player's winrate with the hero
+                         */
+                        var heroObj = {
+                            hero: hero.eq(0).text(),
+                            games: hero.eq(1).text(),
+                            winrate: hero.eq(2).text()
+                        }
 
-                	//Set array in userInfoObject
-                	playerInfoJson.mostPlayed = heroesArray;
+                        //Push object to heroesArray
+                        heroesArray.push(heroObj);
+                    }
+
+                    //Set array in userInfoObject
+                    playerInfoJson.mostPlayed = heroesArray;
 
                 });
+
+                $('#matches').filter(function() {
+
+                    //gets all hero rows in the hero table
+                    var matches = $(this).children('tbody').children('tr');
+                    //create array for, for loop output
+                    var matchesArray = [];
+
+                    /**
+                     * Iterates through heros from table and adds them to matchesArray
+                     * @param  	{Number}	limit	Defines how many matches to add in array.  Max is 20			
+                     */
+                    for (var i = 0, limit = 20; i < limit; i++) {
+
+                        //Set individual hero row
+                        var match = matches.eq(i).children('td');
+
+                        /**
+                         * Object generated with match stats
+                         * @type 		{Object}
+                         * @property 	{string}	matchID		ID for match
+                         * @property 	{string}	hero 		Hero played in match
+                         * @property 	{string}	outcome		Win/Loss results (returns W for win, L for loss)
+                         * @property 	{string}	whenPlayed	String that states how recently game was played	
+                         * @property 	{string}	skillLevel	Skill bracket for game played (returns blank if not available)
+                         */
+                        var matchObj = {
+                            matchID: match.eq(0).text(),
+                            hero: match.eq(1).children('.img-sm').attr('title'),
+                            outcome: match.eq(2).text(),
+                            whenPlayed: match.eq(4).text(),
+                            skillLevel: match.eq(6).text()
+                        }
+
+                        //Push object to matchesArray
+                        matchesArray.push(matchObj);
+                    }
+
+                    //Set array in userInfoObject
+                    playerInfoJson.recentGames = matchesArray;
+
+                });
+
+
+
 
                 //pass JSON Object via callback when done
                 callback(playerInfoJson);
 
             } else {
 
-            	//Set status as error
+                //Set status as error
                 playerInfoJson.status = "Error";
 
                 //pass JSON Object via callback when done
