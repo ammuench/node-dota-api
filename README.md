@@ -2,6 +2,11 @@
 API to fetch Dota stats for players, heroes, matches, and more!
 
 ## What's New? ##
+	v 0.2.2
+	-Added check for invalid user
+	-whenPlayed now returns a formatted date string
+	-kda added to recent match objects
+
 	v 0.2.1
 	-Added match history to playerStats object
 
@@ -55,12 +60,16 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
 		    hero: "",
 		    outcome: "",
 		    whenPlayed: "",
-		    skillLevel: ""
+		    skillLevel: "",
+		    kda: ""
 		}
     ],
     profileURL: ""
 };
 ```
+
+If there an invalid user is passed in, status will return as "Invalid User".  If it is a server error, status will return as "Error".
+
 
 ## What's Planned ##
 -----

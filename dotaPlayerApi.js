@@ -5,6 +5,8 @@
  * @author Alex Muench
  */
 
+var moment = require('moment');
+moment().format();
 
 //define requirements
 var request = require('request');
@@ -12,191 +14,201 @@ var cheerio = require('cheerio');
 
 module.exports = {
 
-    /**
-     * [playerStats description]
-     * @param  {string|integer}	playerID 						Player's Dota ID Number
-     * @param  {Function} 		callback						Provides playerInfoJson object after running request call and logic
-     * @property {object} 		playerInfoJson 					JSON object containing player stats and info
-     * @property {string} 		playerInfoJson.status 			Status of request call.  Returns either 'Success' or 'Error'
-     * @property {string} 		playerInfoJson.soloMMR 			Solo MMR Value
-     * @property {string} 		playerInfoJson.partyMMR 		Party MMR Value
-     * @property {string} 		playerInfoJson.estMMR 			Yasp Estimated MMR Value
-     * @property {string} 		playerInfoJson.name				User's current Profile Name
-     * @property {object} 		playerInfoJson.winLoss			Object of Win-Loss values
-     * @property {string} 		playerInfoJson.winLoss.wins		Number of wins (returned as string)
-     * @property {string} 		playerInfoJson.winLoss.losses	Number of losses (returned as string)
-     * @property {string} 		playerInfoJson.winLoss.winrate	Winrate percentage
-     * @property {array} 		playerInfoJson.mostPlayed 		Array of User's 5 most played heroes, with games played and winrate
-     * @property {array} 		playerInfoJson.recentGames 		Array of User's 20 most recent games, with matchID, hero, result, time played, and skill level
-     * @property {string} 		playerInfoJson.profileUrl 		URL to user's proflie on Yasp.co
-     */
-    playerStats: function(playerID, callback) {
+	/**
+	 * [playerStats description]
+	 * @param  {string|integer}	playerID						Player's Dota ID Number
+	 * @param  {Function}		callback						Provides playerInfoJson object after running request call and logic
+	 * @property {object}		playerInfoJson					JSON object containing player stats and info
+	 * @property {string}		playerInfoJson.status			Status of request call.  Returns either 'Success' or 'Error'
+	 * @property {string}		playerInfoJson.soloMMR			Solo MMR Value
+	 * @property {string}		playerInfoJson.partyMMR			Party MMR Value
+	 * @property {string}		playerInfoJson.estMMR			Yasp Estimated MMR Value
+	 * @property {string}		playerInfoJson.name				User's current Profile Name
+	 * @property {object}		playerInfoJson.winLoss			Object of Win-Loss values
+	 * @property {string}		playerInfoJson.winLoss.wins		Number of wins (returned as string)
+	 * @property {string}		playerInfoJson.winLoss.losses	Number of losses (returned as string)
+	 * @property {string}		playerInfoJson.winLoss.winrate	Winrate percentage
+	 * @property {array}		playerInfoJson.mostPlayed		Array of User's 5 most played heroes, with games played and winrate
+	 * @property {array}		playerInfoJson.recentGames		Array of User's 20 most recent games, with matchID, hero, result, time played, and skill level
+	 * @property {string}		playerInfoJson.profileUrl		URL to user's proflie on Yasp.co
+	 */
+	playerStats: function(playerID, callback) {
 
-        var profileUrl = 'https://yasp.co/players/' + playerID;
-
-        var playerInfoJson = {
-            status: "",
-            soloMMR: "",
-            partyMMR: "",
-            estMMR: "",
-            name: "",
-            winLoss: {
-                wins: "",
-                losses: "",
-                winrate: ""
-            },
-            mostPlayed: [],
-            recentGames: [],
-            profileURL: profileUrl
-        };
-
-        request(profileUrl, function(error, response, html) {
-            if (!error) {
-
-                var $ = cheerio.load(html);
-
-                playerInfoJson.status = "Success";
+		var profileUrl = 'https://yasp.co/players/' + playerID;
 
 
-                //Finds Estimated MMR
-                $('#estimate').filter(function() {
-                    playerInfoJson.estMMR = $(this).children('span').children('abbr').text();
-                });
+		var playerInfoJson = {
+			status: "",
+			soloMMR: "",
+			partyMMR: "",
+			estMMR: "",
+			name: "",
+			winLoss: {
+				wins: "",
+				losses: "",
+				winrate: ""
+			},
+			mostPlayed: [],
+			recentGames: [],
+			profileURL: profileUrl
+		};
 
-                //Finds Solo MMR
-                $('abbr[title="Solo MMR"]').filter(function() {
-                    playerInfoJson.soloMMR = $(this).parent().next().text();
-                });
+		request(profileUrl, function(error, response, html) {
+			if (!error) {
 
-                //Finds Party MMR
-                $('abbr[title="Party MMR"]').filter(function() {
-                    playerInfoJson.partyMMR = $(this).parent().next().text();
-                });
+				var $ = cheerio.load(html);
 
-                //Finds User's Profile Name
-                $('title').filter(function() {
-                    playerInfoJson.name = $(this).text().split(' - YASP')[0];
-                });
+				playerInfoJson.status = "Success";
 
-                //Finds User's Win/Loss Info
-                $('.text-primary').filter(function() {
+				//Finds User's Profile Name
+				$('title').filter(function() {
+					playerInfoJson.name = $(this).text().split(' - YASP')[0];
+				});
 
-                    //Create array for each-loop to output to
-                    var sourceInfoArray = [];
+				//If invalid values are passed in, the username will equal the invalid value, or NaN
+				if (playerInfoJson.name == playerID || playerInfoJson.name = NaN) {
 
-                    /**
-                     * Since the win-loss container is made up of mulitple spans
-                     * we iterate through all of them to get their text contents 
-                     * and put them in a local array
-                     */
-                    sources = $(this).children('small').children('span').each(function(i, elem) {
-                        sourceInfoArray[i] = $(this).text();
-                    });
+					playerInfoJson.status = "Invalid User";
 
-                    //Assign array values to their correct properties
-                    playerInfoJson.winLoss.wins = sourceInfoArray[0];
-                    playerInfoJson.winLoss.losses = sourceInfoArray[2];
-                    playerInfoJson.winLoss.winrate = sourceInfoArray[3].split('(')[1].split(')')[0];
+				} else {
 
-                });
+					//Finds Estimated MMR
+					$('#estimate').filter(function() {
+						playerInfoJson.estMMR = $(this).children('span').children('abbr').text();
+					});
 
-                $('#heroes').filter(function() {
+					//Finds Solo MMR
+					$('abbr[title="Solo MMR"]').filter(function() {
+						playerInfoJson.soloMMR = $(this).parent().next().text();
+					});
 
-                    //gets all hero rows in the hero table
-                    var heroes = $(this).children('tbody').children('tr');
-                    //create array for, for loop output
-                    var heroesArray = [];
+					//Finds Party MMR
+					$('abbr[title="Party MMR"]').filter(function() {
+						playerInfoJson.partyMMR = $(this).parent().next().text();
+					});
 
-                    /**
-                     * Iterates through heros from table and adds them to heroesArray
-                     * @param  	{Number}	limit	Defines how many heroes to add in array.  Max is 20			
-                     */
-                    for (var i = 0, limit = 5; i < limit; i++) {
+					//Finds User's Win/Loss Info
+					$('.text-primary').filter(function() {
 
-                        //Set individual hero row
-                        var hero = heroes.eq(i).children('td');
+						//Create array for each-loop to output to
+						var sourceInfoArray = [];
 
-                        /**
-                         * Object generated with player's hero stats
-                         * @type {Object}
-                         * @property {string} 	hero 	Dota hero name	
-                         * @property {string} 	games 	Games player has had on the hero
-                         * @property {string} 	winrate	Player's winrate with the hero
-                         */
-                        var heroObj = {
-                            hero: hero.eq(0).text(),
-                            games: hero.eq(1).text(),
-                            winrate: hero.eq(2).text()
-                        }
+						/**
+						 * Since the win-loss container is made up of mulitple spans
+						 * we iterate through all of them to get their text contents 
+						 * and put them in a local array
+						 */
+						sources = $(this).children('small').children('span').each(function(i, elem) {
+							sourceInfoArray[i] = $(this).text();
+						});
 
-                        //Push object to heroesArray
-                        heroesArray.push(heroObj);
-                    }
+						//Assign array values to their correct properties
+						playerInfoJson.winLoss.wins = sourceInfoArray[0];
+						playerInfoJson.winLoss.losses = sourceInfoArray[2];
+						playerInfoJson.winLoss.winrate = sourceInfoArray[3].split('(')[1].split(')')[0];
 
-                    //Set array in userInfoObject
-                    playerInfoJson.mostPlayed = heroesArray;
+					});
 
-                });
+					$('#heroes').filter(function() {
 
-                $('#matches').filter(function() {
+						//gets all hero rows in the hero table
+						var heroes = $(this).children('tbody').children('tr');
+						//create array for, for loop output
+						var heroesArray = [];
 
-                    //gets all hero rows in the hero table
-                    var matches = $(this).children('tbody').children('tr');
-                    //create array for, for loop output
-                    var matchesArray = [];
+						/**
+						 * Iterates through heros from table and adds them to heroesArray
+						 * @param  	{Number}	limit	Defines how many heroes to add in array.  Max is 20			
+						 */
+						for (var i = 0, limit = 5; i < limit; i++) {
 
-                    /**
-                     * Iterates through heros from table and adds them to matchesArray
-                     * @param  	{Number}	limit	Defines how many matches to add in array.  Max is 20			
-                     */
-                    for (var i = 0, limit = 20; i < limit; i++) {
+							//Set individual hero row
+							var hero = heroes.eq(i).children('td');
 
-                        //Set individual hero row
-                        var match = matches.eq(i).children('td');
+							/**
+							 * Object generated with player's hero stats
+							 * @type		{Object}
+							 * @property	{string}	hero	Dota hero name	
+							 * @property	{string}	games	Number of games player has had on the hero
+							 * @property	{string}	winrate	Player's winrate with the hero
+							 */
+							var heroObj = {
+								hero: hero.eq(0).text(),
+								games: hero.eq(1).text(),
+								winrate: hero.eq(2).text()
+							}
 
-                        /**
-                         * Object generated with match stats
-                         * @type 		{Object}
-                         * @property 	{string}	matchID		ID for match
-                         * @property 	{string}	hero 		Hero played in match
-                         * @property 	{string}	outcome		Win/Loss results (returns W for win, L for loss)
-                         * @property 	{string}	whenPlayed	String that states how recently game was played	
-                         * @property 	{string}	skillLevel	Skill bracket for game played (returns blank if not available)
-                         */
-                        var matchObj = {
-                            matchID: match.eq(0).text(),
-                            hero: match.eq(1).children('.img-sm').attr('title'),
-                            outcome: match.eq(2).text(),
-                            whenPlayed: match.eq(4).text(),
-                            skillLevel: match.eq(6).text()
-                        }
+							//Push object to heroesArray
+							heroesArray.push(heroObj);
+						}
 
-                        //Push object to matchesArray
-                        matchesArray.push(matchObj);
-                    }
+						//Set array in userInfoObject
+						playerInfoJson.mostPlayed = heroesArray;
 
-                    //Set array in userInfoObject
-                    playerInfoJson.recentGames = matchesArray;
+					});
 
-                });
+					$('#matches').filter(function() {
 
+						//gets all hero rows in the hero table
+						var matches = $(this).children('tbody').children('tr');
+						//create array for, for loop output
+						var matchesArray = [];
 
+						/**
+						 * Iterates through heros from table and adds them to matchesArray
+						 * @param  	{Number}	limit	Defines how many matches to add in array.  Max is 20			
+						 */
+						for (var i = 0, limit = 20; i < limit; i++) {
 
+							//Set individual hero row
+							var match = matches.eq(i).children('td');
 
-                //pass JSON Object via callback when done
-                callback(playerInfoJson);
+							// whenPlayedFormatted = moment.unix(match.eq(4).text());
 
-            } else {
+							/**
+							 * Object generated with match stats
+							 * @type		{Object}
+							 * @property	{string}	matchID		ID for match
+							 * @property	{string}	hero		Hero played in match
+							 * @property	{string}	outcome		Win/Loss results (returns W for win, L for loss)
+							 * @property	{string}	whenPlayed	String that states how recently game was played	
+							 * @property	{string}	skillLevel	Skill bracket for game played (returns blank if not available)
+							 * @property	{string}	kda			Kills/Deaths/Assists
+							 */
+							var matchObj = {
+								matchID: match.eq(0).text(),
+								hero: match.eq(1).children('.img-sm').attr('title'),
+								outcome: match.eq(2).text(),
+								whenPlayed: moment.unix(match.eq(4).text()).format("MMM Do, YYYY"),
+								skillLevel: match.eq(6).text(),
+								kda: match.eq(7).text() + '/' + match.eq(8).text() + '/' + match.eq(9).text()
+							}
 
-                //Set status as error
-                playerInfoJson.status = "Error";
+							//Push object to matchesArray
+							matchesArray.push(matchObj);
+						}
 
-                //pass JSON Object via callback when done
-                callback(playerInfoJson);
-            }
+						//Set array in userInfoObject
+						playerInfoJson.recentGames = matchesArray;
 
-        });
+					});
 
-    }
+				}
+
+				//pass JSON Object via callback when done
+				callback(playerInfoJson);
+
+			} else {
+
+				//Set status as error
+				playerInfoJson.status = "Error";
+
+				//pass JSON Object via callback when done
+				callback(playerInfoJson);
+			}
+
+		});
+
+	}
 
 };
