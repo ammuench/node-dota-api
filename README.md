@@ -1,7 +1,12 @@
 # node-dota-api
 API to fetch Dota stats for players, heroes, matches, and more!
 
-Installation
+## What's New? ##
+    v 0.2
+    -Stripped out all the express jargon from 0.1
+    -Flushed out full playerStats service
+
+## Installation ##
 ------
 You can manually install this by cloning this github repo
 ```bash
@@ -18,30 +23,59 @@ You can install through NPM by running
 npm install node-dota-api
 ```
 
-Once downloaded, move to the base module folder and simply run:
-
-```bash
-npm start
-```
-And you're good to go!  The app should default to port 8081.  If you wish to run on a different port, you can specify it while starting the service
-
-```bash
-PORT=1234 npm start
-```
-
-Configuration
+## API ##
 ------
-By default the service will accept all incoming requests.  If you wish to restrict this, you can go to line 7 of server.js and edit the following:
-
-```javascript
-app.all('*', function(req, res, next){
-  if (!req.get('Origin')) return next();
-  // use "*" here to accept any origin
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authentication, AdminAccess');
-  if ('OPTIONS' == req.method) return res.send(200);
-  next();
-});
+##### nodeDotaApi.playerStats(*playerID*, *callback*)
+Takes a PlayerID value as a string or integer, passes back a playerInfo JSON object through the callback with the following format:
+```json
+{
+    status: "",
+    soloMMR: "",
+    partyMMR: "",
+    estMMR: "",
+    name: "",
+    winLoss: {
+    	wins: "",
+    	losses: "",
+    	winrate: ""
+    },
+    mostPlayed: [
+        {
+            hero: "",
+            games:"",
+            winrate: ""
+        }
+    ],
+    profileURL: profileUrl
+}
 ```
-to change your server restrictions
+
+## What's Planned ##
+-----
+Right now the api is being built out as we use it for some other projects, but some current future features include:
+
+* Looking up additional Player Info, like player trends or activity
+* Looking up hero and item info
+* Looking up Dota Team info
+
+
+## License ##
+-----
+(The MIT License)
+
+Copyright (c) 2016 Alex Muench <ammuench@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Special Thanks ##
+
+Shoutout to the guys at [Yasp.co](http://yasp.co), they do great work, and they're the reason this API works.  Go donate some cheese to help keep their systems running!
+
+Many thanks to Carney for answer myriads of questions when I'm having issues
+
+Much love to Elizabeth for wanting me to win at my code <3
+
