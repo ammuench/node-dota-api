@@ -2,6 +2,9 @@
 API to fetch Dota stats for players, heroes, matches, and more!
 
 ## What's New? ##
+    v0.2.4
+    -Added 'profileImage' to playerStats object
+
     v0.2.3
     -Quick hotfix for a 0.2.2 issue
 
@@ -67,7 +70,8 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
 		    kda: ""
 		}
     ],
-    profileURL: ""
+    profileURL: "",
+    profileImage: ""
 };
 ```
 

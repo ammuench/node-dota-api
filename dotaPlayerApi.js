@@ -1,7 +1,7 @@
 /**
  * node-dota-api
  * A node-based API to get Dota stats for players, heroes, matches, and more!
- * @version 0.2.3
+ * @version 0.2.4
  * @author Alex Muench
  */
 
@@ -71,6 +71,11 @@ module.exports = {
 					playerInfoJson.status = "Invalid User";
 
 				} else {
+
+					//Finds Player Image
+					$('.img-thumbnail').filter(function() {
+						playerInfoJson.profileImage = $(this).attr('src');
+					});
 
 					//Finds Estimated MMR
 					$('#estimate').filter(function() {
