@@ -1,13 +1,13 @@
 {
   "name": "node-dota-api",
-  "version": "0.2.4",
-  "description": "A node-based API to get Dota stats for players, heroes, matches, and more!",
+  "version": "1.0.0",
+  "description": "A node-based API to get DotA stats about DotA players!",
   "main": "./dotaPlayerApi.js",
   "author": "Alex Muench",
   "dependencies": {
-    "cheerio": "latest",
-    "moment": "^2.13.0",
-    "request": "latest"
+    "cheerio": "~0.20.0",
+    "moment": "~2.13.0",
+    "request": "~2.72.0"
   },
   "scripts": {},
   "devDependencies": {},
