@@ -5,6 +5,10 @@ Based off of [OpenDota's new API](https://docs.opendota.com/)
 
 ## What's New? ##
 
+### v2.0.1
+
+- Quick fix to make the `daysSinceLastMatch` value more accurate after talking with the API dev
+
 ### v2.0.0
 
 - Moving to becoming a wrapper for OpenDota's new API

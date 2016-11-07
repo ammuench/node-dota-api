@@ -1,4 +1,8 @@
-# v2.0.0
+# v2.0.1
+
+- Quick fix to make the `daysSinceLastMatch` value more accurate after talking with the API dev
+
+## v2.0.0
 
 - Moving to becoming a wrapper for OpenDota's new API
 - `mostPlayed` and `recentGame` values currently not accessible (will be re-added soon!)
