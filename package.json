@@ -1,7 +1,7 @@
 {
   "name": "node-dota-api",
   "version": "1.0.0",
-  "description": "A node-based API to get DotA stats about DotA players!",
+  "description": "A wrapper for the OpenDota API",
   "main": "./dotaPlayerApi.js",
   "author": "Alex Muench",
   "dependencies": {

@@ -1,52 +1,30 @@
 # node-dota-api
-API to fetch Dota stats for players, heroes, matches, and more!
+A wrapper for the OpenDota API to fetch Dota stats for players, heroes, matches, and more!
+
+Based off of [OpenDota's new API](https://docs.opendota.com/)
 
 ## What's New? ##
-    
-    **v1.0.0**
-    -Major stable release!
-    -Ported to use opendota instead of yasp
-    -Added in game length and game type
-    -Expanded status codes to be more descriptive
-    -Added 'daysSinceLastMatch' value
-    -Added total games played to 'winLoss' object
-    -Locked dependency versions for stability
 
-    ----
+### v2.0.0
 
-    v0.2.4
-    -Added 'profileImage' to playerStats object
+- Moving to becoming a wrapper for OpenDota's new API
+    - This means all prior versions of `node-dota-api` will no longer work
+- `mostPlayed` and `recentGame` values currently not accessible (will be re-added soon!)
 
-    v0.2.3
-    -Quick hotfix for a 0.2.2 issue
+[See previous changelogs here](https://github.com/ammuench/node-dota-api/blob/master/CHANGELOG.md)
 
-	v 0.2.2
-	-Added check for invalid user
-	-whenPlayed now returns a formatted date string
-	-kda added to recent match objects
-
-	v 0.2.1
-	-Added match history to playerStats object
-
-    v 0.2
-    -Stripped out all the express jargon from 0.1
-    -Flushed out full playerStats service
 
 ## Installation ##
 ------
-You can manually install this by cloning this github repo
-```bash
-https://github.com/ammuench/node-dota-api.git
-```
-then running 
-```bash
-npm install
-```
-from within the project folder.
 
 You can install through NPM by running
 ```bash
 npm install node-dota-api
+```
+
+or by cloning from git into your project
+```bash
+git clone https://github.com/ammuench/node-dota-api.git
 ```
 
 ## API ##
@@ -68,33 +46,10 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
         "totalGames": ""
     },
     "mostPlayed": [
-		{
-            "hero": "",
-            "games": "",
-            "winrate": ""
-        },
-        {
-            "hero": "",
-            "games": "",
-            "winrate": ""
-        },
-        {
-            "hero": "",
-            "games": "",
-            "winrate": ""
-        }
+        // CURRENTLY DISABLED IN 2.0.0
     ],
     "recentGames": [
-		{
-		    "matchID": "",
-		    "hero": "",
-		    "outcome": "",
-            "gameMode": "",
-		    "whenPlayed": "",
-            "gameLength": "",
-		    "skillLevel": "",
-		    "kda": ""
-		}
+        // CURRENTLY DISABLED IN 2.0.0
     ],
     "profileURL": "",
     "profileImage": ""
@@ -102,11 +57,13 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
 ```
 ###### Status Reports
 
-If the user is valid, but their profile shows less than 20 games, the status will return as "**Partial Match History**".  This is likely due to match history not being shown, or an extremely new account
+If the user is valid, but their profile shows less than 20 games, the status will return as "**Partial Match History**".  This is likely due to match history not being shown, or an extremely new account.
 
-If the user is valid, but their profile's last parsed game is over 14 days ago, the status will return as "**Outdated Match History**"
+If the user is valid, but their profile's last parsed game is over 14 days ago, the status will return as "**Outdated Match History**".
 
-If there an invalid user is passed in, status will return as "**Invalid User**". 
+If the user has NO match history at all, the status will return as "**No Match History/Invalid Account**", as either are possible (invalid ID number, or no exposed data).
+
+If there an invalid value passed in, status will return as "**Invalid**". 
 
 If it is a server error, status will return as "**Error**".
 
