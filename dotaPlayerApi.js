@@ -34,9 +34,7 @@ module.exports = {
 	 * @property {string}		playerInfoJson.profileUrl			URL to user's proflie on OpenDota.com
 	 */
 	playerStats: function (playerID, callback) {
-
 		var apiBase = 'https://api.opendota.com/api/players/' + playerID;
-
 
 		var playerInfoJson = {
 			status: '',
@@ -66,8 +64,6 @@ module.exports = {
 				if (data.error) {
 					playerInfoJson.status = 'Invalid';
 					callback(playerInfoJson);
-				} else if (data.tracked_until === null) {
-					playerInfoJson.status = 'No Match History/Invalid Account';
 				} else {
 					playerInfoJson.status = 'Valid Account';
 					playerInfoJson.soloMMR = data.solo_competitive_rank;
@@ -77,6 +73,7 @@ module.exports = {
 					playerInfoJson.profileImage = data.profile.avatarfull;
 
 					request(apiBase + '/wl', function (err, res) {
+						console.log('request 2 works')
 						const data = JSON.parse(res.body);
 						playerInfoJson.winLoss.losses = data.lose;
 						playerInfoJson.winLoss.wins = data.win;
@@ -89,7 +86,6 @@ module.exports = {
 							//temp fix while the data returned is off by one month
 							var lastGame = moment.unix(data.start_time)
 							var duration = moment.duration(now.diff(lastGame)).asDays();
-							console.log(duration)
 							playerInfoJson.daysSinceLastMatch = duration;
 							if (duration > 14) {
 								playerInfoJson.status = 'Outdated Match History'
