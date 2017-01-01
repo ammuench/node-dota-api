@@ -73,7 +73,6 @@ module.exports = {
 					playerInfoJson.profileImage = data.profile.avatarfull;
 
 					request(apiBase + '/wl', function (err, res) {
-						console.log('request 2 works')
 						const data = JSON.parse(res.body);
 						playerInfoJson.winLoss.losses = data.lose;
 						playerInfoJson.winLoss.wins = data.win;
