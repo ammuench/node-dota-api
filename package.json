@@ -1,6 +1,6 @@
 {
   "name": "node-dota-api",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A wrapper for the OpenDota API",
   "main": "./dotaPlayerApi.js",
   "author": "Alex Muench",
