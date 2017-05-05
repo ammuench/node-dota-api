@@ -91,7 +91,7 @@ module.exports = {
 								playerInfoJson.status = 'Outdated Match History'
 							}
 
-							if (!apiKey.length) {
+							if (!apiKey) {
 								playerInfoJson.isPrime = 'No apiKey provided';
 								callback(playerInfoJson);
 							} else {
