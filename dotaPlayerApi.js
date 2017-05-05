@@ -53,7 +53,7 @@ module.exports = {
 			recentGames: [],
 			profileURL: 'https://opendota.com/players/' + playerID,
 			profileImage: '',
-			isPrime: undefined
+			isPrime: ''
 		};
 
 		request(apiBase, function (err, res) {
@@ -92,14 +92,12 @@ module.exports = {
 							}
 
 							if (!apiKey.length) {
-								console.log(apiKey);
 								playerInfoJson.isPrime = 'No apiKey provided';
 								callback(playerInfoJson);
 							} else {
 								const steamwebapi = `https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key=${apiKey}&matches_requested=30&account_id=${playerID}&game_mode=7&format=JSON`;
 								let isPrime = false;
 								request(steamwebapi, function (err, res) {
-									// console.log((JSON.parse(res.body).result.matches[0]));
 									const matches = JSON.parse(res.body).result.matches;
 									for (let match of matches) {
 										if (match.lobby_type === 7) {

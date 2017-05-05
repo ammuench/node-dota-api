@@ -5,6 +5,9 @@ Based off of [OpenDota's new API](https://docs.opendota.com/)
 
 ## What's New? ##
 
+### v3.0.1
+- Add new prime account check status
+
 ### v2.0.1
 
 - Quick fix to make the `daysSinceLastMatch` value more accurate after talking with the API dev
@@ -56,7 +59,8 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
         // CURRENTLY DISABLED IN 2.0.0
     ],
     "profileURL": "",
-    "profileImage": ""
+    "profileImage": "",
+    "isPrime" : BOOLEAN or "No apiKey provided"
 };
 ```
 ###### Status Reports
@@ -70,6 +74,8 @@ If the user has NO match history at all, the status will return as "**No Match H
 If there an invalid value passed in, status will return as "**Invalid**". 
 
 If it is a server error, status will return as "**Error**".
+
+Prime Check sees if a ranked game was played after timestamp "1493948227" (roughly around when the prime update went live).
 
 ## License ##
 -----
