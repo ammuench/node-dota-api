@@ -33,7 +33,7 @@ module.exports = {
 	 * @property {array}		playerInfoJson.recentGames			Array of User's 20 most recent games, with matchID, hero, result, time played, and skill level
 	 * @property {string}		playerInfoJson.profileUrl			URL to user's proflie on OpenDota.com
 	 */
-	playerStats: function (playerID, callback) {
+	playerStats: function (playerID, apiKey, callback) {
 		var apiBase = 'https://api.opendota.com/api/players/' + playerID;
 
 		var playerInfoJson = {
@@ -52,7 +52,8 @@ module.exports = {
 			mostPlayed: [],
 			recentGames: [],
 			profileURL: 'https://opendota.com/players/' + playerID,
-			profileImage: ''
+			profileImage: '',
+			isPrime: undefined
 		};
 
 		request(apiBase, function (err, res) {
@@ -90,9 +91,29 @@ module.exports = {
 								playerInfoJson.status = 'Outdated Match History'
 							}
 
-							callback(playerInfoJson);
+							if (!apiKey.length) {
+								console.log(apiKey);
+								playerInfoJson.isPrime = 'No apiKey provided';
+								callback(playerInfoJson);
+							} else {
+								const steamwebapi = `https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key=${apiKey}&matches_requested=30&account_id=${playerID}&game_mode=7&format=JSON`;
+								let isPrime = false;
+								request(steamwebapi, function (err, res) {
+									// console.log((JSON.parse(res.body).result.matches[0]));
+									const matches = JSON.parse(res.body).result.matches;
+									for (let match of matches) {
+										if (match.lobby_type === 7) {
+											isPrime = (match.start_time > 1493948227);
+											break;
+										}
+									}
+									playerInfoJson.isPrime = isPrime;
+									callback(playerInfoJson);
+								});
+							}
+
 						})
-						
+
 					})
 				}
 			}
