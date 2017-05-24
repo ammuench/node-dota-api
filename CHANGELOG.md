@@ -1,4 +1,12 @@
-# v2.0.1
+# v4.0.0
+
+- Update all callbacks to promises
+
+## v3.0.1
+
+- Add new prime account check status
+
+## v2.0.1
 
 - Quick fix to make the `daysSinceLastMatch` value more accurate after talking with the API dev
 

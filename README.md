@@ -1,22 +1,21 @@
 # node-dota-api
-A wrapper for the OpenDota API to fetch Dota stats for players, heroes, matches, and more!
+A tool to fetch Dota stats for players, heroes, matches, and more!
 
-Based off of [OpenDota's new API](https://docs.opendota.com/)
+Based off of [OpenDota's new API](https://docs.opendota.com/) & Dota 2's Web API
 
 ## What's New? ##
 
+### v4.0.0
+
+- Update all callbacks to now be promises (thanks [Quazia](https://github.com/ammuench/node-dota-api/pull/3))
+
 ### v3.0.1
+
 - Add new prime account check status
 
 ### v2.0.1
 
 - Quick fix to make the `daysSinceLastMatch` value more accurate after talking with the API dev
-
-### v2.0.0
-
-- Moving to becoming a wrapper for OpenDota's new API
-    - This means all prior versions of `node-dota-api` will no longer work
-- `mostPlayed` and `recentGame` values currently not accessible (will be re-added soon!)
 
 [See previous changelogs here](https://github.com/ammuench/node-dota-api/blob/master/CHANGELOG.md)
 
@@ -36,8 +35,8 @@ git clone https://github.com/ammuench/node-dota-api.git
 
 ## API ##
 ------
-##### nodeDotaApi.playerStats(*playerID*, *callback*)
-Takes a PlayerID value as a string or integer, passes back a playerInfo JSON object through the callback with the following format:
+##### nodeDotaApi.playerStats(*playerID*)
+Takes a PlayerID value as a string or integer. Returns a promise that passes back a playerInfo JSON object with the following format:
 ```json
 {
     "status": "",
@@ -52,12 +51,6 @@ Takes a PlayerID value as a string or integer, passes back a playerInfo JSON obj
         "winrate": "",
         "totalGames": ""
     },
-    "mostPlayed": [
-        // CURRENTLY DISABLED IN 2.0.0
-    ],
-    "recentGames": [
-        // CURRENTLY DISABLED IN 2.0.0
-    ],
     "profileURL": "",
     "profileImage": "",
     "isPrime" : BOOLEAN or "No apiKey provided"
@@ -94,6 +87,8 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## Special Thanks ##
 
 Shoutout to the guys at [OpenDota](http://opendota.com), they do great work, and they're the reason this API works.  Go [donate and help carry](https://www.opendota.com/carry) them to keep their systems running!
+
+Thanks to [Arthur](https://github.com/quazia) for his contributions to the project
 
 Many thanks to Carney for answer myriads of questions when I'm having issues
 
