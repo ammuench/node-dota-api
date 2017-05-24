@@ -55,66 +55,88 @@ module.exports = {
 			profileImage: '',
 			isPrime: ''
 		};
-
-		request(apiBase, function (err, res) {
-			if (err) {
-				playerInfoJson.status = 'Error';
-				callback(playerInfoJson);
-			} else {
-				const data = JSON.parse(res.body);
-				if (data.error) {
-					playerInfoJson.status = 'Invalid';
-					callback(playerInfoJson);
+		return new Promise(function (resolve, reject) {
+			request(apiBase, function (err, res) {
+				if (err) {
+					playerInfoJson.status = 'Error';
+					reject("error with initial request");
 				} else {
-					playerInfoJson.status = 'Valid Account';
-					playerInfoJson.soloMMR = data.solo_competitive_rank;
-					playerInfoJson.partyMMR = data.competitive_rank;
-					playerInfoJson.estMMR = data.mmr_estimate.estimate;
-					playerInfoJson.name = data.profile.personaname;
-					playerInfoJson.profileImage = data.profile.avatarfull;
+					const data = JSON.parse(res.body);
+					if (data.error) {
+						playerInfoJson.status = 'Invalid';
+						resolve(playerInfoJson);
+					} else {
+						playerInfoJson.status = 'Valid Account';
+						playerInfoJson.soloMMR = data.solo_competitive_rank;
+						playerInfoJson.partyMMR = data.competitive_rank;
+						playerInfoJson.estMMR = data.mmr_estimate.estimate;
+						playerInfoJson.name = data.profile.personaname;
+						playerInfoJson.profileImage = data.profile.avatarfull;
 
-					request(apiBase + '/wl', function (err, res) {
-						const data = JSON.parse(res.body);
-						playerInfoJson.winLoss.losses = data.lose;
-						playerInfoJson.winLoss.wins = data.win;
-						playerInfoJson.winLoss.totalGames = data.lose + data.win;
-						playerInfoJson.winLoss.winrate = (data.win / (data.lose + data.win));
-
-						request(apiBase + '/matches?limit=1', function (err, res) {
-							const data = JSON.parse(res.body)[0];
-							var now = moment(new Date());
-							//temp fix while the data returned is off by one month
-							var lastGame = moment.unix(data.start_time)
-							var duration = moment.duration(now.diff(lastGame)).asDays();
-							playerInfoJson.daysSinceLastMatch = duration;
-							if (duration > 14) {
-								playerInfoJson.status = 'Outdated Match History'
+						request(apiBase + '/wl', function (err, res) {
+							if (err) {
+								playerInfoJson.status = 'Error';
+								reject("error with wl request");
 							}
+							const data = JSON.parse(res.body);
+							if(data.lose == null || data.win == null){
+								reject("error fetching win loss data");
+							}
+							playerInfoJson.winLoss.losses = data.lose;
+							playerInfoJson.winLoss.wins = data.win;
+							playerInfoJson.winLoss.totalGames = data.lose + data.win;
+							playerInfoJson.winLoss.winrate = (data.win / (data.lose + data.win));
 
-							if (!apiKey) {
-								playerInfoJson.isPrime = 'No apiKey provided';
-								callback(playerInfoJson);
-							} else {
-								const steamwebapi = `https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key=${apiKey}&matches_requested=30&account_id=${playerID}&game_mode=7&format=JSON`;
-								let isPrime = false;
-								request(steamwebapi, function (err, res) {
-									const matches = JSON.parse(res.body).result.matches;
-									for (let match of matches) {
-										if (match.lobby_type === 7) {
-											isPrime = (match.start_time > 1493948227);
-											break;
+							request(apiBase + '/matches?limit=1', function (err, res) {
+								if (err) {
+									playerInfoJson.status = 'Error';
+									reject("error with wl request");
+								}
+								const data = JSON.parse(res.body)[0];
+								var now = moment(new Date());
+								//temp fix while the data returned is off by one month
+								if(data.start_time == null){
+									reject("Error fetching start time of last match");
+								}
+								var lastGame = moment.unix(data.start_time)
+								var duration = moment.duration(now.diff(lastGame)).asDays();
+								playerInfoJson.daysSinceLastMatch = duration;
+								if (duration > 14) {
+									playerInfoJson.status = 'Outdated Match History'
+								}
+
+								if (!apiKey) {
+									playerInfoJson.isPrime = 'No apiKey provided';
+									resolve(playerInfoJson);
+								} else {
+									const steamwebapi = `https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1/?key=${apiKey}&matches_requested=30&account_id=${playerID}&game_mode=7&format=JSON`;
+									let isPrime = false;
+									request(steamwebapi, function (err, res) {
+										if (err) {
+											playerInfoJson.status = 'Error';
+											reject("error with wl request");
 										}
-									}
-									playerInfoJson.isPrime = isPrime;
-									callback(playerInfoJson);
-								});
-							}
+										const matches = JSON.parse(res.body).result.matches;
+										if(matches = null){
+											reject("error fetching matchs");
+										}
+										for (let match of matches) {
+											if (match.lobby_type === 7) {
+												isPrime = (match.start_time > 1493948227);
+												break;
+											}
+										}
+										playerInfoJson.isPrime = isPrime;
+										resolve(playerInfoJson);
+									});
+								}
+
+							})
 
 						})
-
-					})
+					}
 				}
-			}
+			});
 		});
 	}
 
