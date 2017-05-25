@@ -16,7 +16,6 @@ module.exports = {
 	/**
 	 * [playerStats description]
 	 * @param  {string|integer}	playerID							Player's Dota ID Number
-	 * @param  {Function}		callback							Provides playerInfoJson object after running request call and logic
 	 * @property {object}		playerInfoJson						JSON object containing player stats and info
 	 * @property {string}		playerInfoJson.status				Status of request call.  See status reports section in README.md
 	 * @property {float}		playerInfoJson.daysSinceLastMatch	Number of days since last match was played && parsed
@@ -33,7 +32,7 @@ module.exports = {
 	 * @property {array}		playerInfoJson.recentGames			Array of User's 20 most recent games, with matchID, hero, result, time played, and skill level
 	 * @property {string}		playerInfoJson.profileUrl			URL to user's proflie on OpenDota.com
 	 */
-	playerStats: function (playerID, apiKey, callback) {
+	playerStats: function (playerID, apiKey) {
 		var apiBase = 'https://api.opendota.com/api/players/' + playerID;
 
 		var playerInfoJson = {
@@ -117,7 +116,7 @@ module.exports = {
 											reject("error with wl request");
 										}
 										const matches = JSON.parse(res.body).result.matches;
-										if(matches = null){
+										if(matches == null){
 											reject("error fetching matchs");
 										}
 										for (let match of matches) {
