@@ -1,4 +1,8 @@
-# v4.0.0
+# v4.0.1
+
+- Minor bugfix for mistyped conditional check
+
+## v4.0.0
 
 - Update all callbacks to promises
 

@@ -5,6 +5,10 @@ Based off of [OpenDota's new API](https://docs.opendota.com/) & Dota 2's Web API
 
 ## What's New? ##
 
+## v4.0.1
+
+- Minor bugfix for mistyped conditoinal check (thanks [Quazia](https://github.com/ammuench/node-dota-api/pull/4))
+
 ### v4.0.0
 
 - Update all callbacks to now be promises (thanks [Quazia](https://github.com/ammuench/node-dota-api/pull/3))
@@ -12,10 +16,6 @@ Based off of [OpenDota's new API](https://docs.opendota.com/) & Dota 2's Web API
 ### v3.0.1
 
 - Add new prime account check status
-
-### v2.0.1
-
-- Quick fix to make the `daysSinceLastMatch` value more accurate after talking with the API dev
 
 [See previous changelogs here](https://github.com/ammuench/node-dota-api/blob/master/CHANGELOG.md)
 
