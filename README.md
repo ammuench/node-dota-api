@@ -5,7 +5,11 @@ Based off of [OpenDota's new API](https://docs.opendota.com/) & Dota 2's Web API
 
 ## What's New? ##
 
-## v4.0.1
+## v5.0.0
+
+- Switch to opendota instead of steam web api for Prime Account Check (thanks [Mags](https://github.com/ammuench/node-dota-api/pull/5))
+
+### v4.0.1
 
 - Minor bugfix for mistyped conditoinal check (thanks [Quazia](https://github.com/ammuench/node-dota-api/pull/4))
 
@@ -88,7 +92,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 Shoutout to the guys at [OpenDota](http://opendota.com), they do great work, and they're the reason this API works.  Go [donate and help carry](https://www.opendota.com/carry) them to keep their systems running!
 
-Thanks to [Arthur](https://github.com/quazia) for his contributions to the project
+Thanks to [Arthur](https://github.com/quazia) & [Mags](https://github.com/MichaelMagnoli) for their contributions to the project
 
 Many thanks to Carney for answer myriads of questions when I'm having issues
 

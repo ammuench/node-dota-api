@@ -1,8 +1,8 @@
 /**
  * node-dota-api
  * A node-based API to get Dota stats for players, heroes, matches, and more!
- * @version 0.2.4
- * @author Alex Muench
+ * @version 5.0.0
+ * @author Alex Muench, Arthur Lunn, Michael Magnoli
  */
 
 const moment = require('moment');
